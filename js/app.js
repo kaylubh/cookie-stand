@@ -2,6 +2,7 @@
 
 const hoursOpen = ['6am', '7am', '8am', '9am', '10am', '11am', '12pm', '1pm', '2pm', '3pm', '4pm', '5pm', '6pm', '7pm'];
 
+
 /*
 store object {
   location
@@ -13,6 +14,7 @@ store object {
 }
 */
 
+// Store object shape
 function Store(location, minHourlyCustomers, maxHourlyCustomers, avgSalePerCustomer) {
   this.location = location;
   this.minHourlyCustomers = minHourlyCustomers;
@@ -22,6 +24,7 @@ function Store(location, minHourlyCustomers, maxHourlyCustomers, avgSalePerCusto
   this.estSales = this.generateEstSales();
 }
 
+// Store object methods
 Store.prototype.generateEstCustomers = function () {
   return randomCustomers(this.minHourlyCustomers, this.maxHourlyCustomers);
 };
@@ -30,11 +33,13 @@ Store.prototype.generateEstSales = function () {
   return calculateSales(this.estCustomers, this.avgSalePerCustomer);
 };
 
+// Create Store instances
 const seattle = new Store('Seattle', 23, 65, 6.3);
 const tokyo = new Store('Tokyo', 3, 24, 1.2);
 const dubai = new Store('Dubai', 11, 38, 3.7);
 const paris = new Store('Paris', 20, 38, 2.3);
 const lima = new Store('Lima', 2, 16, 4.6);
+
 
 // calculate random customers for each hour
 function randomCustomers(min, max) {
@@ -60,8 +65,19 @@ function calculateSales(estCustomers, avgSale) {
   return sales;
 }
 
+
+// function to create html elements easier
+function elemental(elementTag, appendTo, textContent) {
+  const element = document.createElement(elementTag);
+  appendTo.appendChild(element);
+  if (textContent !== undefined) {
+    element.textContent = textContent;
+  }
+}
+
+
 // display store sales data on sales.html
-function displaySalesData (store) {
+function displaySalesData(store) {
   let containerElement = document.getElementById('salesData');
 
   let title = document.createElement('h2');
