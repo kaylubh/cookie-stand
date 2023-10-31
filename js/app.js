@@ -75,6 +75,18 @@ function elemental(elementTag, appendTo, textContent) {
   }
 }
 
+// create sales data table header
+function renderSalesDataTableHeader () {
+  const Container = document.getElementById('salesDataTable');
+  elemental('tr', Container);
+  elemental('th', Container, 'Locations');
+  for (let i = 0; i < hoursOpen.length; i++) {
+    let hour = hoursOpen[i];
+    elemental('th', Container, hour);
+  }
+  elemental('th', Container, 'Location Totals');
+}
+renderSalesDataTableHeader();
 
 // display store sales data on sales.html
 function displaySalesData(store) {
