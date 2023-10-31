@@ -1,6 +1,6 @@
 'use strict';
 
-let hoursOpen = ['6am', '7am', '8am', '9am', '10am', '11am', '12pm', '1pm', '2pm', '3pm', '4pm', '5pm', '6pm', '7pm'];
+const hoursOpen = ['6am', '7am', '8am', '9am', '10am', '11am', '12pm', '1pm', '2pm', '3pm', '4pm', '5pm', '6pm', '7pm'];
 
 /*
 store object {
@@ -12,6 +12,29 @@ store object {
   estimated sales in array [last value in array is total sales for day]
 }
 */
+
+
+
+function Store(location, minHourlyCustomers, maxHourlyCustomers, avgSalePerCustomer) {
+  this.location = location;
+  this.minHourlyCustomers = minHourlyCustomers;
+  this.maxHourlyCustomers = maxHourlyCustomers;
+  this.avgSalePerCustomer = avgSalePerCustomer;
+  this.estCustomers = this.generateEstCustomers();
+  this.estSales = this.generateEstSales();
+}
+
+Store.prototype.generateEstCustomers = function () {
+  return randomCustomers(this.minHourlyCustomers, this.maxHourlyCustomers);
+};
+
+Store.prototype.generateEstSales = function () {
+  return calculateSales(this.estCustomers, this.avgSalePerCustomer);
+};
+
+const seattle = new Store('Seattle', 23, 65, 6.3);
+
+/*
 
 let seattle = {
   location: 'Seattle',
@@ -103,6 +126,8 @@ let lima = {
 lima.generateEstCustomers();
 lima.generateEstSales();
 
+*/
+
 // calculate random customers for each hour
 function randomCustomers(min, max) {
   let customers = [];
@@ -152,7 +177,7 @@ function displaySalesData (store) {
 }
 
 displaySalesData(seattle);
-displaySalesData(tokyo);
-displaySalesData(dubai);
-displaySalesData(paris);
-displaySalesData(lima);
+// displaySalesData(tokyo);
+// displaySalesData(dubai);
+// displaySalesData(paris);
+// displaySalesData(lima);
