@@ -13,8 +13,6 @@ store object {
 }
 */
 
-
-
 function Store(location, minHourlyCustomers, maxHourlyCustomers, avgSalePerCustomer) {
   this.location = location;
   this.minHourlyCustomers = minHourlyCustomers;
@@ -33,100 +31,10 @@ Store.prototype.generateEstSales = function () {
 };
 
 const seattle = new Store('Seattle', 23, 65, 6.3);
-
-/*
-
-let seattle = {
-  location: 'Seattle',
-  minHourlyCustomers: 23,
-  maxHourlyCustomers: 65,
-  avgSalePerCustomer: 6.3,
-  estCustomers: [],
-  estSales: [],
-  generateEstCustomers: function () {
-    this.estCustomers = randomCustomers(this.minHourlyCustomers, this.maxHourlyCustomers);
-  },
-  generateEstSales: function () {
-    this.estSales = calculateSales(this.estCustomers, this.avgSalePerCustomer);
-  }
-};
-
-seattle.generateEstCustomers();
-seattle.generateEstSales();
-
-let tokyo = {
-  location: 'Tokyo',
-  minHourlyCustomers: 3,
-  maxHourlyCustomers: 24,
-  avgSalePerCustomer: 1.2,
-  estCustomers: [],
-  estSales: [],
-  generateEstCustomers: function () {
-    this.estCustomers = randomCustomers(this.minHourlyCustomers, this.maxHourlyCustomers);
-  },
-  generateEstSales: function () {
-    this.estSales = calculateSales(this.estCustomers, this.avgSalePerCustomer);
-  }
-};
-
-tokyo.generateEstCustomers();
-tokyo.generateEstSales();
-
-let dubai = {
-  location: 'Dubai',
-  minHourlyCustomers: 11,
-  maxHourlyCustomers: 38,
-  avgSalePerCustomer: 3.7,
-  estCustomers: [],
-  estSales: [],
-  generateEstCustomers: function () {
-    this.estCustomers = randomCustomers(this.minHourlyCustomers, this.maxHourlyCustomers);
-  },
-  generateEstSales: function () {
-    this.estSales = calculateSales(this.estCustomers, this.avgSalePerCustomer);
-  }
-};
-
-dubai.generateEstCustomers();
-dubai.generateEstSales();
-
-let paris = {
-  location: 'Paris',
-  minHourlyCustomers: 20,
-  maxHourlyCustomers: 38,
-  avgSalePerCustomer: 2.3,
-  estCustomers: [],
-  estSales: [],
-  generateEstCustomers: function () {
-    this.estCustomers = randomCustomers(this.minHourlyCustomers, this.maxHourlyCustomers);
-  },
-  generateEstSales: function () {
-    this.estSales = calculateSales(this.estCustomers, this.avgSalePerCustomer);
-  }
-};
-
-paris.generateEstCustomers();
-paris.generateEstSales();
-
-let lima = {
-  location: 'Lima',
-  minHourlyCustomers: 2,
-  maxHourlyCustomers: 16,
-  avgSalePerCustomer: 4.6,
-  estCustomers: [],
-  estSales: [],
-  generateEstCustomers: function () {
-    this.estCustomers = randomCustomers(this.minHourlyCustomers, this.maxHourlyCustomers);
-  },
-  generateEstSales: function () {
-    this.estSales = calculateSales(this.estCustomers, this.avgSalePerCustomer);
-  }
-};
-
-lima.generateEstCustomers();
-lima.generateEstSales();
-
-*/
+const tokyo = new Store('Tokyo', 3, 24, 1.2);
+const dubai = new Store('Dubai', 11, 38, 3.7);
+const paris = new Store('Paris', 20, 38, 2.3);
+const lima = new Store('Lima', 2, 16, 4.6);
 
 // calculate random customers for each hour
 function randomCustomers(min, max) {
@@ -177,7 +85,7 @@ function displaySalesData (store) {
 }
 
 displaySalesData(seattle);
-// displaySalesData(tokyo);
-// displaySalesData(dubai);
-// displaySalesData(paris);
-// displaySalesData(lima);
+displaySalesData(tokyo);
+displaySalesData(dubai);
+displaySalesData(paris);
+displaySalesData(lima);
