@@ -67,9 +67,6 @@ function renderSalesDataTableFooter () {
   const container = document.getElementById('salesDataTable');
   const footerContainer = addElement('tr', container);
   addElement('th', footerContainer, 'Hourly Totals for All Locations');
-  // s1, t1, d1, p1, l1
-  // s2, t2, d2, p2, l2
-  // as many hours open plus 1
   for (let i = 0; i <= hoursOpen.length; i++) {
     let totalHourSales = 0;
     for (let a = 0; a < allStoresHourlySales.length; a++) {
@@ -123,33 +120,3 @@ const paris = new Store('Paris', 20, 38, 2.3);
 const lima = new Store('Lima', 2, 16, 4.6);
 
 renderSalesDataTableFooter();
-
-// display store sales data on sales.html
-function displaySalesData(store) {
-  let containerElement = document.getElementById('salesData');
-
-  let title = document.createElement('h2');
-  containerElement.appendChild(title);
-  title.textContent = store.location;
-
-  let list = document.createElement('ul');
-  containerElement.appendChild(list);
-
-  for (let i = 0; i < hoursOpen.length; i++) {
-    let hourlySalesListItem = document.createElement('li');
-    list.appendChild(hourlySalesListItem);
-    hourlySalesListItem.textContent = `${hoursOpen[i]}: ${store.estSales[i]} cookies`;
-  }
-
-  let salesTotalIndex = hoursOpen.length;
-  let salesTotal = store.estSales[salesTotalIndex];
-  let salesTotalListItem = document.createElement('li');
-  list.appendChild(salesTotalListItem);
-  salesTotalListItem.textContent = `Total: ${salesTotal} cookies`;
-}
-
-displaySalesData(seattle);
-displaySalesData(tokyo);
-displaySalesData(dubai);
-displaySalesData(paris);
-displaySalesData(lima);
