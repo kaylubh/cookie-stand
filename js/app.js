@@ -1,107 +1,7 @@
 'use strict';
 
-let hoursOpen = ['6am', '7am', '8am', '9am', '10am', '11am', '12pm', '1pm', '2pm', '3pm', '4pm', '5pm', '6pm', '7pm'];
-
-/*
-store object {
-  location
-  minimum customers per hour
-  maximum customers per hour
-  average cookie sales per customer
-  estimated customers in array
-  estimated sales in array [last value in array is total sales for day]
-}
-*/
-
-let seattle = {
-  location: 'Seattle',
-  minHourlyCustomers: 23,
-  maxHourlyCustomers: 65,
-  avgSalePerCustomer: 6.3,
-  estCustomers: [],
-  estSales: [],
-  generateEstCustomers: function () {
-    this.estCustomers = randomCustomers(this.minHourlyCustomers, this.maxHourlyCustomers);
-  },
-  generateEstSales: function () {
-    this.estSales = calculateSales(this.estCustomers, this.avgSalePerCustomer);
-  }
-};
-
-seattle.generateEstCustomers();
-seattle.generateEstSales();
-
-let tokyo = {
-  location: 'Tokyo',
-  minHourlyCustomers: 3,
-  maxHourlyCustomers: 24,
-  avgSalePerCustomer: 1.2,
-  estCustomers: [],
-  estSales: [],
-  generateEstCustomers: function () {
-    this.estCustomers = randomCustomers(this.minHourlyCustomers, this.maxHourlyCustomers);
-  },
-  generateEstSales: function () {
-    this.estSales = calculateSales(this.estCustomers, this.avgSalePerCustomer);
-  }
-};
-
-tokyo.generateEstCustomers();
-tokyo.generateEstSales();
-
-let dubai = {
-  location: 'Dubai',
-  minHourlyCustomers: 11,
-  maxHourlyCustomers: 38,
-  avgSalePerCustomer: 3.7,
-  estCustomers: [],
-  estSales: [],
-  generateEstCustomers: function () {
-    this.estCustomers = randomCustomers(this.minHourlyCustomers, this.maxHourlyCustomers);
-  },
-  generateEstSales: function () {
-    this.estSales = calculateSales(this.estCustomers, this.avgSalePerCustomer);
-  }
-};
-
-dubai.generateEstCustomers();
-dubai.generateEstSales();
-
-let paris = {
-  location: 'Paris',
-  minHourlyCustomers: 20,
-  maxHourlyCustomers: 38,
-  avgSalePerCustomer: 2.3,
-  estCustomers: [],
-  estSales: [],
-  generateEstCustomers: function () {
-    this.estCustomers = randomCustomers(this.minHourlyCustomers, this.maxHourlyCustomers);
-  },
-  generateEstSales: function () {
-    this.estSales = calculateSales(this.estCustomers, this.avgSalePerCustomer);
-  }
-};
-
-paris.generateEstCustomers();
-paris.generateEstSales();
-
-let lima = {
-  location: 'Lima',
-  minHourlyCustomers: 2,
-  maxHourlyCustomers: 16,
-  avgSalePerCustomer: 4.6,
-  estCustomers: [],
-  estSales: [],
-  generateEstCustomers: function () {
-    this.estCustomers = randomCustomers(this.minHourlyCustomers, this.maxHourlyCustomers);
-  },
-  generateEstSales: function () {
-    this.estSales = calculateSales(this.estCustomers, this.avgSalePerCustomer);
-  }
-};
-
-lima.generateEstCustomers();
-lima.generateEstSales();
+const hoursOpen = ['6am', '7am', '8am', '9am', '10am', '11am', '12pm', '1pm', '2pm', '3pm', '4pm', '5pm', '6pm', '7pm'];
+let allStoresHourlySales = [];
 
 // calculate random customers for each hour
 function randomCustomers(min, max) {
@@ -124,35 +24,99 @@ function calculateSales(estCustomers, avgSale) {
     totalSales += sales[i];
   }
   sales.push(totalSales); // stores total day sales at end of the array
+  allStoresHourlySales.push(sales); // stores each locations hourly sales
   return sales;
 }
 
-// display store sales data on sales.html
-function displaySalesData (store) {
-  let containerElement = document.getElementById('salesData');
-
-  let title = document.createElement('h2');
-  containerElement.appendChild(title);
-  title.textContent = store.location;
-
-  let list = document.createElement('ul');
-  containerElement.appendChild(list);
-
-  for (let i = 0; i < hoursOpen.length; i++) {
-    let hourlySalesListItem = document.createElement('li');
-    list.appendChild(hourlySalesListItem);
-    hourlySalesListItem.textContent = `${hoursOpen[i]}: ${store.estSales[i]} cookies`;
+// function to create html elements easier
+function addElement(elementTag, appendTo, textContent) {
+  const element = document.createElement(elementTag);
+  appendTo.appendChild(element);
+  if (textContent !== undefined) {
+    element.textContent = textContent;
   }
-
-  let salesTotalIndex = hoursOpen.length;
-  let salesTotal = store.estSales[salesTotalIndex];
-  let salesTotalListItem = document.createElement('li');
-  list.appendChild(salesTotalListItem);
-  salesTotalListItem.textContent = `Total: ${salesTotal} cookies`;
+  return element;
 }
 
-displaySalesData(seattle);
-displaySalesData(tokyo);
-displaySalesData(dubai);
-displaySalesData(paris);
-displaySalesData(lima);
+// create sales data table header
+function renderSalesDataTableHeader () {
+  const container = document.getElementById('salesDataTable');
+  const headerContainer = addElement('tr', container);
+  addElement('th', headerContainer, 'Locations');
+  for (let i = 0; i < hoursOpen.length; i++) {
+    let hour = hoursOpen[i];
+    addElement('th', headerContainer, hour);
+  }
+  addElement('th', headerContainer, 'Location Totals');
+}
+renderSalesDataTableHeader();
+
+// create sales data table row
+function renderSalesDataTableRow (location, sales) {
+  const container = document.getElementById('salesDataTable');
+  const rowContainer = addElement('tr', container);
+  addElement('td', rowContainer, location);
+  for (let i = 0; i < sales.length - 1; i++) {
+    addElement('td', rowContainer, sales[i]);
+  }
+  addElement('th', rowContainer, sales[sales.length - 1]);
+}
+
+// create sales data table footer
+function renderSalesDataTableFooter () {
+  const container = document.getElementById('salesDataTable');
+  const footerContainer = addElement('tr', container);
+  addElement('th', footerContainer, 'Hourly Totals for All Locations');
+  for (let i = 0; i <= hoursOpen.length; i++) {
+    let totalHourSales = 0;
+    for (let a = 0; a < allStoresHourlySales.length; a++) {
+      let storeSales = allStoresHourlySales[a];
+      totalHourSales += storeSales[i];
+    }
+    addElement('th', footerContainer, totalHourSales);
+  }
+}
+
+/*
+store object {
+  location
+  minimum customers per hour
+  maximum customers per hour
+  average cookie sales per customer
+  estimated customers in array
+  estimated sales in array [last value in array is total sales for day]
+}
+*/
+
+// Store object constructor function
+function Store(location, minHourlyCustomers, maxHourlyCustomers, avgSalePerCustomer) {
+  this.location = location;
+  this.minHourlyCustomers = minHourlyCustomers;
+  this.maxHourlyCustomers = maxHourlyCustomers;
+  this.avgSalePerCustomer = avgSalePerCustomer;
+  this.estCustomers = this.generateEstCustomers();
+  this.estSales = this.generateEstSales();
+  this.render = this.renderSalesDataTableRow();
+}
+
+// Store object methods
+Store.prototype.generateEstCustomers = function () {
+  return randomCustomers(this.minHourlyCustomers, this.maxHourlyCustomers);
+};
+
+Store.prototype.generateEstSales = function () {
+  return calculateSales(this.estCustomers, this.avgSalePerCustomer);
+};
+
+Store.prototype.renderSalesDataTableRow = function () {
+  renderSalesDataTableRow(this.location, this.estSales);
+};
+
+// Create Store instances
+const seattle = new Store('Seattle', 23, 65, 6.3);
+const tokyo = new Store('Tokyo', 3, 24, 1.2);
+const dubai = new Store('Dubai', 11, 38, 3.7);
+const paris = new Store('Paris', 20, 38, 2.3);
+const lima = new Store('Lima', 2, 16, 4.6);
+
+renderSalesDataTableFooter();
