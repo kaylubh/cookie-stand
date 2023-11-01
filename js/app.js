@@ -1,6 +1,7 @@
 'use strict';
 
 const hoursOpen = ['6am', '7am', '8am', '9am', '10am', '11am', '12pm', '1pm', '2pm', '3pm', '4pm', '5pm', '6pm', '7pm'];
+let allStoresHourlySales = [];
 
 // calculate random customers for each hour
 function randomCustomers(min, max) {
@@ -23,6 +24,7 @@ function calculateSales(estCustomers, avgSale) {
     totalSales += sales[i];
   }
   sales.push(totalSales); // stores total day sales at end of the array
+  allStoresHourlySales.push(sales); // stores each locations hourly sales
   return sales;
 }
 
@@ -54,8 +56,27 @@ function renderSalesDataTableRow (location, sales) {
   const container = document.getElementById('salesDataTable');
   const rowContainer = addElement('tr', container);
   addElement('td', rowContainer, location);
-  for (let i = 0; i < sales.length; i++) {
+  for (let i = 0; i < sales.length - 1; i++) {
     addElement('td', rowContainer, sales[i]);
+  }
+  addElement('th', rowContainer, sales[sales.length - 1]);
+}
+
+// create sales data table footer
+function renderSalesDataTableFooter () {
+  const container = document.getElementById('salesDataTable');
+  const footerContainer = addElement('tr', container);
+  addElement('th', footerContainer, 'Hourly Totals for All Locations');
+  // s1, t1, d1, p1, l1
+  // s2, t2, d2, p2, l2
+  // as many hours open plus 1
+  for (let i = 0; i <= hoursOpen.length; i++) {
+    let totalHourSales = 0;
+    for (let a = 0; a < allStoresHourlySales.length; a++) {
+      let storeSales = allStoresHourlySales[a];
+      totalHourSales += storeSales[i];
+    }
+    addElement('th', footerContainer, totalHourSales);
   }
 }
 
@@ -70,7 +91,7 @@ store object {
 }
 */
 
-// Store object shape
+// Store object constructor function
 function Store(location, minHourlyCustomers, maxHourlyCustomers, avgSalePerCustomer) {
   this.location = location;
   this.minHourlyCustomers = minHourlyCustomers;
@@ -101,6 +122,7 @@ const dubai = new Store('Dubai', 11, 38, 3.7);
 const paris = new Store('Paris', 20, 38, 2.3);
 const lima = new Store('Lima', 2, 16, 4.6);
 
+renderSalesDataTableFooter();
 
 // display store sales data on sales.html
 function displaySalesData(store) {
