@@ -39,7 +39,7 @@ function addElement(elementTag, appendTo, textContent) {
 }
 
 // create sales data table header
-function renderSalesDataTableHeader () {
+function renderSalesDataTableHeader() {
   const container = document.getElementById('salesDataTable');
   const headerContainer = addElement('tr', container);
   addElement('th', headerContainer, 'Locations');
@@ -52,7 +52,7 @@ function renderSalesDataTableHeader () {
 renderSalesDataTableHeader();
 
 // create sales data table row
-function renderSalesDataTableRow (location, sales) {
+function renderSalesDataTableRow(location, sales) {
   const container = document.getElementById('salesDataTable');
   const rowContainer = addElement('tr', container);
   addElement('td', rowContainer, location);
@@ -63,7 +63,7 @@ function renderSalesDataTableRow (location, sales) {
 }
 
 // create sales data table footer
-function renderSalesDataTableFooter () {
+function renderSalesDataTableFooter() {
   const container = document.getElementById('salesDataTable');
   const footerContainer = addElement('tr', container);
   addElement('th', footerContainer, 'Hourly Totals for All Locations');
@@ -103,11 +103,9 @@ function Store(location, minHourlyCustomers, maxHourlyCustomers, avgSalePerCusto
 Store.prototype.generateEstCustomers = function () {
   return randomCustomers(this.minHourlyCustomers, this.maxHourlyCustomers);
 };
-
 Store.prototype.generateEstSales = function () {
   return calculateSales(this.estCustomers, this.avgSalePerCustomer);
 };
-
 Store.prototype.renderSalesDataTableRow = function () {
   renderSalesDataTableRow(this.location, this.estSales);
 };
