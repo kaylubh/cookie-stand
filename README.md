@@ -8,4 +8,9 @@
 
 ### Lighthouse Accessibility Report Score
 
+#### Home Page
+
+![Lighthouse accessibility report for the home page of Pat's Salmon Cookies, Score: 100](img/lighthouse-index.png)
+![Lighthouse accessibility report for the sales data page of Pat's Salmon Cookies, Score: 93](img/lighthouse-sales.png)
+
 ### Comments
