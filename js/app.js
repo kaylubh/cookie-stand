@@ -2,6 +2,7 @@
 
 const hoursOpen = ['6am', '7am', '8am', '9am', '10am', '11am', '12pm', '1pm', '2pm', '3pm', '4pm', '5pm', '6pm', '7pm'];
 let allStoresHourlySales = [];
+const salesTable = document.getElementById('salesDataTable');
 
 // calculate random customers for each hour
 function randomCustomers(min, max) {
@@ -40,40 +41,39 @@ function addElement(elementTag, appendTo, textContent) {
 
 // create sales data table header
 function renderSalesDataTableHeader() {
-  const container = document.getElementById('salesDataTable');
-  const headerContainer = addElement('tr', container);
-  addElement('th', headerContainer, 'Locations');
+  const header = addElement('thead', salesTable);
+  const headerRow = addElement('tr', header);
+  addElement('th', headerRow, 'Locations');
   for (let i = 0; i < hoursOpen.length; i++) {
     let hour = hoursOpen[i];
-    addElement('th', headerContainer, hour);
+    addElement('th', headerRow, hour);
   }
-  addElement('th', headerContainer, 'Location Totals');
+  addElement('th', headerRow, 'Location Totals');
 }
-renderSalesDataTableHeader();
 
 // create sales data table row
 function renderSalesDataTableRow(location, sales) {
-  const container = document.getElementById('salesDataTable');
-  const rowContainer = addElement('tr', container);
-  addElement('td', rowContainer, location);
+  const body = addElement('tbody', salesTable);
+  const dataRow = addElement('tr', body);
+  addElement('td', dataRow, location);
   for (let i = 0; i < sales.length - 1; i++) {
-    addElement('td', rowContainer, sales[i]);
+    addElement('td', dataRow, sales[i]);
   }
-  addElement('th', rowContainer, sales[sales.length - 1]);
+  addElement('th', dataRow, sales[sales.length - 1]);
 }
 
 // create sales data table footer
 function renderSalesDataTableFooter() {
-  const container = document.getElementById('salesDataTable');
-  const footerContainer = addElement('tr', container);
-  addElement('th', footerContainer, 'Hourly Totals for All Locations');
+  const footer = addElement('tfoot', salesTable);
+  const footerRow = addElement('tr', footer);
+  addElement('th', footerRow, 'Hourly Totals for All Locations');
   for (let i = 0; i <= hoursOpen.length; i++) {
     let totalHourSales = 0;
-    for (let a = 0; a < allStoresHourlySales.length; a++) {
-      let storeSales = allStoresHourlySales[a];
+    for (let j = 0; j < allStoresHourlySales.length; j++) {
+      let storeSales = allStoresHourlySales[j];
       totalHourSales += storeSales[i];
     }
-    addElement('th', footerContainer, totalHourSales);
+    addElement('th', footerRow, totalHourSales);
   }
 }
 
@@ -117,4 +117,5 @@ const dubai = new Store('Dubai', 11, 38, 3.7);
 const paris = new Store('Paris', 20, 38, 2.3);
 const lima = new Store('Lima', 2, 16, 4.6);
 
+renderSalesDataTableHeader();
 renderSalesDataTableFooter();
