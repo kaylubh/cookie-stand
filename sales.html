@@ -19,7 +19,33 @@
     </nav>
   </header>
   <main>
-    <table id="salesDataTable"></table>
+    <section>
+      <form id="addStoreForm">
+        <fieldset>
+          <legend>Add a new store to the table!!!</legend>
+          <label>
+            Location Name
+            <input type="text" name="locationNameInput" placeholder="Seattle" required>
+          </label>
+          <label>
+            Minimum Customers Per Hour
+            <input type="number" name="minCustomerInput" placeholder="1" step="1" min="1" required>
+          </label>
+          <label>
+            Maximum Customers Per Hour
+            <input type="number" name="maxCustomerInput" placeholder="1" step="1" min="1" required>
+          </label>
+          <label>
+            Average Cookies Per Sale
+            <input type="number" name="maxCustomerInput" placeholder="1.0" step="0.1" min="0.1" required>
+          </label>
+          <button type="submit">Click here to add!</button>
+        </fieldset>
+      </form>
+    </section>
+    <section>
+      <table id="salesDataTable"></table>
+    </section>
   </main>
   <footer>
     <p>&copy; 2023 Pat's Salmon Cookies</p>
