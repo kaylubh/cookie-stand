@@ -1,7 +1,10 @@
 'use strict';
 
 const hoursOpen = ['6am', '7am', '8am', '9am', '10am', '11am', '12pm', '1pm', '2pm', '3pm', '4pm', '5pm', '6pm', '7pm'];
-let allStoresHourlySales = [];
+const salesForm = document.getElementById('addStoreForm');
+const salesTable = document.getElementById('salesDataTable');
+const initialStores = [['Seattle', 23, 65, 6.3], ['Tokyo', 3, 24, 1.2], ['Dubai', 11, 38, 3.7], ['Paris', 20, 38, 2.3], ['Lima', 2, 16, 4.6]];
+let storeObjects = [];
 
 // calculate random customers for each hour
 function randomCustomers(min, max) {
@@ -24,7 +27,6 @@ function calculateSales(estCustomers, avgSale) {
     totalSales += sales[i];
   }
   sales.push(totalSales); // stores total day sales at end of the array
-  allStoresHourlySales.push(sales); // stores each locations hourly sales
   return sales;
 }
 
@@ -40,40 +42,39 @@ function addElement(elementTag, appendTo, textContent) {
 
 // create sales data table header
 function renderSalesDataTableHeader() {
-  const container = document.getElementById('salesDataTable');
-  const headerContainer = addElement('tr', container);
-  addElement('th', headerContainer, 'Locations');
+  const header = addElement('thead', salesTable);
+  const headerRow = addElement('tr', header);
+  addElement('th', headerRow, 'Locations');
   for (let i = 0; i < hoursOpen.length; i++) {
     let hour = hoursOpen[i];
-    addElement('th', headerContainer, hour);
+    addElement('th', headerRow, hour);
   }
-  addElement('th', headerContainer, 'Location Totals');
+  addElement('th', headerRow, 'Location Totals');
 }
-renderSalesDataTableHeader();
 
 // create sales data table row
 function renderSalesDataTableRow(location, sales) {
-  const container = document.getElementById('salesDataTable');
-  const rowContainer = addElement('tr', container);
-  addElement('td', rowContainer, location);
+  const body = addElement('tbody', salesTable);
+  const dataRow = addElement('tr', body);
+  addElement('td', dataRow, location);
   for (let i = 0; i < sales.length - 1; i++) {
-    addElement('td', rowContainer, sales[i]);
+    addElement('td', dataRow, sales[i]);
   }
-  addElement('th', rowContainer, sales[sales.length - 1]);
+  addElement('th', dataRow, sales[sales.length - 1]);
 }
 
-// create sales data table footer
 function renderSalesDataTableFooter() {
-  const container = document.getElementById('salesDataTable');
-  const footerContainer = addElement('tr', container);
-  addElement('th', footerContainer, 'Hourly Totals for All Locations');
+  const footer = addElement('tfoot', salesTable);
+  const footerRow = addElement('tr', footer);
+  addElement('th', footerRow, 'Hourly Totals for All Locations');
   for (let i = 0; i <= hoursOpen.length; i++) {
     let totalHourSales = 0;
-    for (let a = 0; a < allStoresHourlySales.length; a++) {
-      let storeSales = allStoresHourlySales[a];
+    for (let j = 0; j < storeObjects.length; j++) {
+      let currentStore = storeObjects[j];
+      let storeSales = currentStore.estSales;
       totalHourSales += storeSales[i];
     }
-    addElement('th', footerContainer, totalHourSales);
+    addElement('th', footerRow, totalHourSales);
   }
 }
 
@@ -96,7 +97,7 @@ function Store(location, minHourlyCustomers, maxHourlyCustomers, avgSalePerCusto
   this.avgSalePerCustomer = avgSalePerCustomer;
   this.estCustomers = this.generateEstCustomers();
   this.estSales = this.generateEstSales();
-  this.render = this.renderSalesDataTableRow();
+  this.render = this.generateSalesDataTableRow();
 }
 
 // Store object methods
@@ -106,15 +107,43 @@ Store.prototype.generateEstCustomers = function () {
 Store.prototype.generateEstSales = function () {
   return calculateSales(this.estCustomers, this.avgSalePerCustomer);
 };
-Store.prototype.renderSalesDataTableRow = function () {
+Store.prototype.generateSalesDataTableRow = function () {
   renderSalesDataTableRow(this.location, this.estSales);
 };
 
-// Create Store instances
-const seattle = new Store('Seattle', 23, 65, 6.3);
-const tokyo = new Store('Tokyo', 3, 24, 1.2);
-const dubai = new Store('Dubai', 11, 38, 3.7);
-const paris = new Store('Paris', 20, 38, 2.3);
-const lima = new Store('Lima', 2, 16, 4.6);
+// Create initial Store instances
+function createInitialStores() {
+  for (let i = 0; i < initialStores.length; i++) {
+    const currentStore = initialStores[i];
+    const newStore = new Store(currentStore[0], currentStore[1], currentStore[2], currentStore[3]);
+    storeObjects.push(newStore);
+  }
+  renderSalesDataTableFooter();
+}
 
-renderSalesDataTableFooter();
+// Add new Stores from form
+function createAdditionalStore(event) {
+  event.preventDefault();
+  const location = event.target.locationNameInput.value;
+  let minHourlyCustomers = event.target.minCustomerInput.value;
+  minHourlyCustomers = parseInt(minHourlyCustomers);
+  let maxHourlyCustomers = event.target.maxCustomerInput.value;
+  maxHourlyCustomers = parseInt(maxHourlyCustomers);
+  let avgSalePerCustomer = event.target.avgCookieInput.value;
+  avgSalePerCustomer = parseFloat(avgSalePerCustomer);
+  console.log(location);
+  console.log(minHourlyCustomers);
+  console.log(maxHourlyCustomers);
+  console.log(avgSalePerCustomer);
+  const newStore = new Store(location, minHourlyCustomers, maxHourlyCustomers, avgSalePerCustomer);
+  storeObjects.push(newStore);
+  salesForm.reset();
+  const footer = document.querySelector('tfoot');
+  footer.remove();
+  renderSalesDataTableFooter();
+}
+
+salesForm.addEventListener('submit', createAdditionalStore);
+
+createInitialStores();
+renderSalesDataTableHeader();
