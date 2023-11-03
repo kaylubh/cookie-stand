@@ -1,8 +1,9 @@
 'use strict';
 
 const hoursOpen = ['6am', '7am', '8am', '9am', '10am', '11am', '12pm', '1pm', '2pm', '3pm', '4pm', '5pm', '6pm', '7pm'];
-let allStoresHourlySales = [];
+const salesForm = document.getElementById('addStoreForm');
 const salesTable = document.getElementById('salesDataTable');
+let allStoresHourlySales = [];
 const initialStores = [['Seattle', 23, 65, 6.3], ['Tokyo', 3, 24, 1.2], ['Dubai', 11, 38, 3.7], ['Paris', 20, 38, 2.3], ['Lima', 2, 16, 4.6]];
 let storeObjects = [];
 
@@ -136,14 +137,40 @@ Store.prototype.generateSalesDataTableRow = function () {
 // const paris = new Store('Paris', 20, 38, 2.3);
 // const lima = new Store('Lima', 2, 16, 4.6);
 
+// Create initial Store instances
 function createInitialStores() {
   for (let i = 0; i < initialStores.length; i++) {
-    let currentStore = initialStores[i];
-    let newStore = new Store(currentStore[0], currentStore[1], currentStore[2], currentStore[3]);
+    const currentStore = initialStores[i];
+    const newStore = new Store(currentStore[0], currentStore[1], currentStore[2], currentStore[3]);
     storeObjects.push(newStore);
   }
+  renderSalesDataTableFooter();
 }
+
+// Add new Stores from form
+function createAdditionalStore(event) {
+  event.preventDefault();
+  const location = event.target.locationNameInput.value;
+  let minHourlyCustomers = event.target.minCustomerInput.value;
+  minHourlyCustomers = parseInt(minHourlyCustomers);
+  let maxHourlyCustomers = event.target.maxCustomerInput.value;
+  maxHourlyCustomers = parseInt(maxHourlyCustomers);
+  let avgSalePerCustomer = event.target.avgCookieInput.value;
+  avgSalePerCustomer = parseFloat(avgSalePerCustomer);
+  console.log(location);
+  console.log(minHourlyCustomers);
+  console.log(maxHourlyCustomers);
+  console.log(avgSalePerCustomer);
+  const newStore = new Store(location, minHourlyCustomers, maxHourlyCustomers, avgSalePerCustomer);
+  storeObjects.push(newStore);
+  salesForm.reset();
+  const footer = document.querySelector('tfoot');
+  footer.remove();
+  renderSalesDataTableFooter();
+}
+
+salesForm.addEventListener('submit', createAdditionalStore);
 
 createInitialStores();
 renderSalesDataTableHeader();
-renderSalesDataTableFooter();
+
