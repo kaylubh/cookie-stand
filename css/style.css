@@ -85,9 +85,10 @@ legend {
   padding: 0 1rem;
 }
 
-input {
+input, select {
   width: 10rem;
   margin: 0 0.5rem;
+  caret-color: salmon;
 }
 
 input[type="number"] {
