@@ -1,6 +1,10 @@
 body {
   font-family: Georgia, 'Times New Roman', Times, serif;
   font-size: 1rem;
+  background-color: whitesmoke;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
 }
 
 header {
@@ -18,16 +22,24 @@ h1 {
 
 nav {
   background-color: salmon;
-  margin-bottom: 3rem;
+  display: flex;
+  justify-content: space-around;
 }
 
 nav li {
   display: inline-block;
   padding: 1rem;
+  transition: all 0.3s ease;
+}
+
+nav li:hover, li:focus {
+  background-color: darksalmon;
+  font-weight: bold;
 }
 
 a {
   color: black;
+  font-family: Righteous;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -59,7 +71,7 @@ main li {
 fieldset {
   border: .1rem solid black;
   width: 80%;
-  margin: 0 auto 2rem auto;
+  margin: 0 auto 3rem auto;
   padding: 1.5rem;
   display: flex;
   justify-content: space-evenly;
@@ -73,9 +85,10 @@ legend {
   padding: 0 1rem;
 }
 
-input {
+input, select {
   width: 10rem;
   margin: 0 0.5rem;
+  caret-color: salmon;
 }
 
 input[type="number"] {
@@ -108,5 +121,4 @@ footer {
   background-color: lightgray;
   text-align: center;
   padding: 4rem;
-  margin-top: 4rem;
 }

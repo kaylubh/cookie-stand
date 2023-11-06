@@ -2,6 +2,8 @@
 
 const hoursOpen = ['6am', '7am', '8am', '9am', '10am', '11am', '12pm', '1pm', '2pm', '3pm', '4pm', '5pm', '6pm', '7pm'];
 const salesForm = document.getElementById('addStoreForm');
+const updateSalesForm = document.getElementById('updateStoreForm');
+const updateFormDropdownList = document.getElementById('updateLocationNameList');
 const salesTable = document.getElementById('salesDataTable');
 const initialStores = [['Seattle', 23, 65, 6.3], ['Tokyo', 3, 24, 1.2], ['Dubai', 11, 38, 3.7], ['Paris', 20, 38, 2.3], ['Lima', 2, 16, 4.6]];
 let storeObjects = [];
@@ -52,19 +54,38 @@ function renderSalesDataTableHeader() {
   addElement('th', headerRow, 'Location Totals');
 }
 
-// create sales data table row
-function renderSalesDataTableRow(location, sales) {
-  const body = addElement('tbody', salesTable);
-  const dataRow = addElement('tr', body);
-  addElement('td', dataRow, location);
-  for (let i = 0; i < sales.length - 1; i++) {
-    addElement('td', dataRow, sales[i]);
+// create sales data table rows
+function renderSalesDataTableRows() {
+  let body = document.querySelector('tbody');
+
+  if (body) {
+    body.innerHTML = '';
+  } else {
+    body = addElement('tbody', salesTable);
   }
-  addElement('th', dataRow, sales[sales.length - 1]);
+
+  for (let i = 0; i < storeObjects.length; i++) {
+    let currentStore = storeObjects[i];
+    let locationName = currentStore.location;
+    let sales = currentStore.estSales;
+    const dataRow = addElement('tr', body);
+    addElement('td', dataRow, locationName);
+    for (let j = 0; j < sales.length - 1; j++) {
+      addElement('td', dataRow, sales[j]);
+    }
+    addElement('th', dataRow, sales[sales.length - 1]);
+  }
 }
 
 function renderSalesDataTableFooter() {
-  const footer = addElement('tfoot', salesTable);
+  let footer = document.querySelector('tfoot');
+
+  if (footer) {
+    footer.innerHTML = '';
+  } else {
+    footer = addElement('tfoot', salesTable);
+  }
+
   const footerRow = addElement('tr', footer);
   addElement('th', footerRow, 'Hourly Totals for All Locations');
   for (let i = 0; i <= hoursOpen.length; i++) {
@@ -97,7 +118,6 @@ function Store(location, minHourlyCustomers, maxHourlyCustomers, avgSalePerCusto
   this.avgSalePerCustomer = avgSalePerCustomer;
   this.estCustomers = this.generateEstCustomers();
   this.estSales = this.generateEstSales();
-  this.render = this.generateSalesDataTableRow();
 }
 
 // Store object methods
@@ -107,9 +127,6 @@ Store.prototype.generateEstCustomers = function () {
 Store.prototype.generateEstSales = function () {
   return calculateSales(this.estCustomers, this.avgSalePerCustomer);
 };
-Store.prototype.generateSalesDataTableRow = function () {
-  renderSalesDataTableRow(this.location, this.estSales);
-};
 
 // Create initial Store instances
 function createInitialStores() {
@@ -118,10 +135,12 @@ function createInitialStores() {
     const newStore = new Store(currentStore[0], currentStore[1], currentStore[2], currentStore[3]);
     storeObjects.push(newStore);
   }
+  renderSalesDataTableRows();
   renderSalesDataTableFooter();
+  createUpdateFormDropdownList();
 }
 
-// Add new Stores from form
+// add new Stores
 function createAdditionalStore(event) {
   event.preventDefault();
   const location = event.target.locationNameInput.value;
@@ -131,19 +150,89 @@ function createAdditionalStore(event) {
   maxHourlyCustomers = parseInt(maxHourlyCustomers);
   let avgSalePerCustomer = event.target.avgCookieInput.value;
   avgSalePerCustomer = parseFloat(avgSalePerCustomer);
-  console.log(location);
-  console.log(minHourlyCustomers);
-  console.log(maxHourlyCustomers);
-  console.log(avgSalePerCustomer);
   const newStore = new Store(location, minHourlyCustomers, maxHourlyCustomers, avgSalePerCustomer);
   storeObjects.push(newStore);
   salesForm.reset();
-  const footer = document.querySelector('tfoot');
-  footer.remove();
+  renderSalesDataTableRows();
+  renderSalesDataTableFooter();
+  createUpdateFormDropdownList();
+}
+
+// update existing Store
+function updateExistingStore(event) {
+  event.preventDefault();
+  const location = event.target.updateLocationNameList.value;
+  let minHourlyCustomers = event.target.minCustomerUpdate.value;
+  minHourlyCustomers = parseInt(minHourlyCustomers);
+  let maxHourlyCustomers = event.target.maxCustomerUpdate.value;
+  maxHourlyCustomers = parseInt(maxHourlyCustomers);
+  let avgSalePerCustomer = event.target.avgCookieUpdate.value;
+  avgSalePerCustomer = parseFloat(avgSalePerCustomer);
+  for (let i = 0; i < storeObjects.length; i++) {
+    let currentStore = storeObjects[i];
+    let currentStoreLocation = currentStore.location;
+    if (currentStoreLocation === location) {
+      currentStore.minHourlyCustomers = minHourlyCustomers;
+      currentStore.maxHourlyCustomers = maxHourlyCustomers;
+      currentStore.avgSalePerCustomer = avgSalePerCustomer;
+      currentStore.estCustomers = currentStore.generateEstCustomers();
+      currentStore.estSales = currentStore.generateEstSales();
+    }
+  }
+  updateSalesForm.reset();
+  renderSalesDataTableRows();
   renderSalesDataTableFooter();
 }
 
-salesForm.addEventListener('submit', createAdditionalStore);
+// generate list of existing Stores for update form
+function createUpdateFormDropdownList() {
+  updateFormDropdownList.innerHTML = '';
+  const initialOption = addElement('option', updateFormDropdownList, '---Select a Store---');
+  initialOption.setAttribute('selected', true);
 
-createInitialStores();
+  for (let i = 0; i < storeObjects.length; i++) {
+    let currentStore = storeObjects[i];
+    let locationName = currentStore.location;
+    let locationOption = addElement('option', updateFormDropdownList, locationName);
+    locationOption.setAttribute('value', locationName);
+  }
+}
+
+// display current Store sales data on update form inputs
+function updateFormSalesData() {
+  const location = updateFormDropdownList.value;
+  const updateMinCustomerInput = document.getElementById('minCustomerUpdate');
+  const updateMaxCustomerInput = document.getElementById('maxCustomerUpdate');
+  const updateAvgCookieInput = document.getElementById('avgCookieUpdate');
+
+  for (let i = 0; i < storeObjects.length; i++) {
+    const currentStore = storeObjects[i];
+    const currentStoreLocation = currentStore.location;
+    const currentStoreMinCustomer = currentStore.minHourlyCustomers;
+    const currentStoreMaxCustomer = currentStore.maxHourlyCustomers;
+    const currentStoreAvgSale = currentStore.avgSalePerCustomer;
+
+    if (location === currentStoreLocation) {
+      updateMinCustomerInput.setAttribute('placeholder', currentStoreMinCustomer);
+      updateMinCustomerInput.removeAttribute('disabled');
+      updateMaxCustomerInput.setAttribute('placeholder', currentStoreMaxCustomer);
+      updateMaxCustomerInput.removeAttribute('disabled');
+      updateAvgCookieInput.setAttribute('placeholder', currentStoreAvgSale);
+      updateAvgCookieInput.removeAttribute('disabled');
+    } else if (location === '---Select a Store---') {
+      updateMinCustomerInput.setAttribute('disabled', 'true');
+      updateMinCustomerInput.setAttribute('placeholder', '1');
+      updateMaxCustomerInput.setAttribute('disabled', 'true');
+      updateMaxCustomerInput.setAttribute('placeholder', '1');
+      updateAvgCookieInput.setAttribute('disabled', 'true');
+      updateAvgCookieInput.setAttribute('placeholder', '1.0');
+    }
+  }
+}
+
+salesForm.addEventListener('submit', createAdditionalStore);
+updateSalesForm.addEventListener('submit', updateExistingStore);
+updateFormDropdownList.addEventListener('input', updateFormSalesData);
+
 renderSalesDataTableHeader();
+createInitialStores();
